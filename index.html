@@ -35,6 +35,20 @@
   <button onclick="postPlayer()">Create</button>
   <pre id="postOut"></pre>
 
+  <h2>PATCH – Update One Field</h2>
+  <label>ID: <input id="patchId" type="number" value="1" /></label>
+  <label>Field to update:
+    <select id="patchField" style="width:100%;padding:6px;margin:4px 0 8px;">
+      <option value="name">Name</option>
+      <option value="team">Team</option>
+      <option value="position">Position</option>
+      <option value="nationality">Nationality</option>
+    </select>
+  </label>
+  <label>New value: <input id="patchValue" value="FC Barcelona" /></label>
+  <button onclick="patchPlayer()">Update</button>
+  <pre id="patchOut"></pre>
+
   <h2>DELETE Player by ID</h2>
   <label>ID: <input id="delId" type="number" value="1" /></label>
   <button onclick="delPlayer()">Delete</button>
@@ -60,6 +74,16 @@
       };
       document.getElementById("postOut").textContent = j(await api("/players", {
         method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      }));
+    }
+    async function patchPlayer() {
+      const field = document.getElementById("patchField").value;
+      const value = document.getElementById("patchValue").value;
+      const body = { [field]: value };
+      document.getElementById("patchOut").textContent = j(await api("/players/" + document.getElementById("patchId").value, {
+        method: "PATCH",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(body)
       }));
