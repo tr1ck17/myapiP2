@@ -35,6 +35,15 @@
   <button onclick="postPlayer()">Create</button>
   <pre id="postOut"></pre>
 
+  <h2>PUT – Full Update</h2>
+  <label>ID: <input id="putId" type="number" value="1" /></label>
+  <label>Name:        <input id="putName"     value="Lionel Messi" /></label>
+  <label>Team:        <input id="putTeam"     value="Inter Miami" /></label>
+  <label>Position:    <input id="putPosition" value="Forward" /></label>
+  <label>Nationality: <input id="putNat"      value="Argentine" /></label>
+  <button onclick="putPlayer()">Full Update</button>
+  <pre id="putOut"></pre>
+
   <h2>PATCH – Update One Field</h2>
   <label>ID: <input id="patchId" type="number" value="1" /></label>
   <label>Field to update:
@@ -46,7 +55,7 @@
     </select>
   </label>
   <label>New value: <input id="patchValue" value="FC Barcelona" /></label>
-  <button onclick="patchPlayer()">Update</button>
+  <button onclick="patchPlayer()">Partial Update</button>
   <pre id="patchOut"></pre>
 
   <h2>DELETE Player by ID</h2>
@@ -74,6 +83,19 @@
       };
       document.getElementById("postOut").textContent = j(await api("/players", {
         method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      }));
+    }
+    async function putPlayer() {
+      const body = {
+        name: document.getElementById("putName").value,
+        team: document.getElementById("putTeam").value,
+        position: document.getElementById("putPosition").value,
+        nationality: document.getElementById("putNat").value
+      };
+      document.getElementById("putOut").textContent = j(await api("/players/" + document.getElementById("putId").value, {
+        method: "PUT",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify(body)
       }));
