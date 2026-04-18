@@ -2,4 +2,6 @@ fastapi
 uvicorn
 supabase
 pydantic
+streamlit
+requests
 python-dotenv
