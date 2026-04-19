@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Soccer Players API</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 700px; margin: 40px auto; padding: 0 20px; }
+    h1 { color: #1a5276; }
+    h2 { color: #2e86c1; }
+    button { background: #1a5276; color: white; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px; margin-top: 4px; }
+    button:hover { background: #154360; }
+    pre { background: #f4f4f4; padding: 12px; border-radius: 4px; overflow: auto; }
+    input { padding: 6px; width: 100%; box-sizing: border-box; margin: 4px 0 8px; }
+    label { font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>⚽ Soccer Players API</h1>
+  <p>President UI — Frontend for the Soccer Players REST API</p>
+
+  <h2>GET All Players</h2>
+  <button onclick="getAll()">Fetch All</button>
+  <pre id="allOut"></pre>
+
+  <h2>GET Player by ID</h2>
+  <label>ID: <input id="getId" type="number" value="1" /></label>
+  <button onclick="getOne()">Fetch</button>
+  <pre id="oneOut"></pre>
+
+  <h2>POST – Add Player</h2>
+  <label>Name:        <input id="newName"     value="Neymar Jr" /></label>
+  <label>Team:        <input id="newTeam"     value="Al Hilal" /></label>
+  <label>Position:    <input id="newPosition" value="Forward" /></label>
+  <label>Nationality: <input id="newNat"      value="Brazilian" /></label>
+  <button onclick="postPlayer()">Create</button>
+  <pre id="postOut"></pre>
+
+  <h2>PUT – Full Update</h2>
+  <label>ID: <input id="putId" type="number" value="1" /></label>
+  <label>Name:        <input id="putName"     value="Lionel Messi" /></label>
+  <label>Team:        <input id="putTeam"     value="Inter Miami" /></label>
+  <label>Position:    <input id="putPosition" value="Forward" /></label>
+  <label>Nationality: <input id="putNat"      value="Argentine" /></label>
+  <button onclick="putPlayer()">Full Update</button>
+  <pre id="putOut"></pre>
+
+  <h2>PATCH – Update One Field</h2>
+  <label>ID: <input id="patchId" type="number" value="1" /></label>
+  <label>Field to update:
+    <select id="patchField" style="width:100%;padding:6px;margin:4px 0 8px;">
+      <option value="name">Name</option>
+      <option value="team">Team</option>
+      <option value="position">Position</option>
+      <option value="nationality">Nationality</option>
+    </select>
+  </label>
+  <label>New value: <input id="patchValue" value="FC Barcelona" /></label>
+  <button onclick="patchPlayer()">Partial Update</button>
+  <pre id="patchOut"></pre>
+
+  <h2>DELETE Player by ID</h2>
+  <label>ID: <input id="delId" type="number" value="1" /></label>
+  <button onclick="delPlayer()">Delete</button>
+  <pre id="delOut"></pre>
+
+  <script>
+    const BASE = "https://myapip2.onrender.com";
+    const j = x => JSON.stringify(x, null, 2);
+    const api = (path, opts={}) => fetch(BASE+path, opts).then(r => r.json());
+
+    async function getAll() {
+      document.getElementById("allOut").textContent = j(await api("/players"));
+    }
+    async function getOne() {
+      document.getElementById("oneOut").textContent = j(await api("/players/" + document.getElementById("getId").value));
+    }
+    async function postPlayer() {
+      const body = {
+        name: document.getElementById("newName").value,
+        team: document.getElementById("newTeam").value,
+        position: document.getElementById("newPosition").value,
+        nationality: document.getElementById("newNat").value
+      };
+      document.getElementById("postOut").textContent = j(await api("/players", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      }));
+    }
+    async function putPlayer() {
+      const body = {
+        name: document.getElementById("putName").value,
+        team: document.getElementById("putTeam").value,
+        position: document.getElementById("putPosition").value,
+        nationality: document.getElementById("putNat").value
+      };
+      document.getElementById("putOut").textContent = j(await api("/players/" + document.getElementById("putId").value, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      }));
+    }
+    async function patchPlayer() {
+      const field = document.getElementById("patchField").value;
+      const value = document.getElementById("patchValue").value;
+      const body = { [field]: value };
+      document.getElementById("patchOut").textContent = j(await api("/players/" + document.getElementById("patchId").value, {
+        method: "PATCH",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify(body)
+      }));
+    }
+    async function delPlayer() {
+      document.getElementById("delOut").textContent = j(await api("/players/" + document.getElementById("delId").value, {method: "DELETE"}));
+    }
+  </script>
+</body>
+</html>
