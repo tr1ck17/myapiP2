@@ -6,12 +6,27 @@ BASE = "https://myapip2.onrender.com"
 st.title("Soccer Players Manager")
 st.markdown("A full-stack SCRUD app consuming the Soccer Players REST API")
 
+# ── Custom CSS for visible input borders ───────────────────────
+st.markdown("""
+<style>
+input[type="text"], input[type="number"] {
+    border: 2px solid #2e86c1 !important;
+    border-radius: 6px !important;
+    background-color: #ffffff !important;
+}
+div[data-baseweb="select"] {
+    border: 2px solid #2e86c1 !important;
+    border-radius: 6px !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 st.divider()
 
 # ── SEARCH ────────────────────────────────────────────────────
 st.header("Search Players")
 search_term = st.text_input("Search by name, team, position, or nationality")
-if st.button("Search"):
+if st.button("Search", disabled=not search_term.strip()):
     r = requests.get(f"{BASE}/players")
     if r.status_code == 200:
         players = r.json()
